@@ -33,11 +33,13 @@ public class WordLadderSolver implements Assignment4Interface
     	solutionList.add(fromWord);
     	//iterate through dictionary
     	//find all difference of one words and put into templist
+    	//make sure not to add words that are already in solutionList
     	
     	for(int i = 0; i < tempList.size(); i++)
     	{
     		if(makeLadder(tempList.get(i), toWord, index++) == true)
     		{
+    			
     			return true;
     		}
     		else
