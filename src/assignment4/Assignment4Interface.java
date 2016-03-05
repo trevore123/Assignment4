@@ -21,7 +21,7 @@ public interface Assignment4Interface
      * be different by exactly one letter.
      * @throws NoSuchLadderException is thrown if no word ladder can be generated from startWord and endWord.
      */
-    List<String> computeLadder(String startWord, String endWord) throws NoSuchLadderException;
+    List<String> computeLadder(String startWord, String endWord) throws NoSuchLadderException, IllegalArgumentException;
 
     /**
      * Determines whether or not a word ladder is valid. NOTE: this method is NOT part of the requirements
@@ -35,4 +35,6 @@ public interface Assignment4Interface
      * @return True if the word ladder is correct, false otherwise.
      */
     boolean validateResult(String startWord, String endWord, List<String> wordLadder);
+    
+    void clear();
 }
