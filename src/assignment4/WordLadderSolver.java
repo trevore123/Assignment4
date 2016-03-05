@@ -74,7 +74,7 @@ public class WordLadderSolver implements Assignment4Interface
     			if(getDifferenceIndex(fromWord, dictionary.words.get(i)) != index 
     				&& !solutionList.contains(dictionary.words.get(i)))
     			{
-    				tempList.add(countDifferences(fromWord, toWord) + dictionary.words.get(i));
+    				tempList.add(countDiff(dictionary.words.get(i), toWord) + dictionary.words.get(i));
     			}
     		}
     	}
@@ -117,14 +117,14 @@ public class WordLadderSolver implements Assignment4Interface
     	return index;
     }
     
-    public int countDifferences(String one, String two)
+    public int countDiff(String one, String two)
     {
     	int counter = 0;
     	for(int i = 0; i < one.length(); i++)
     	{
     		if(one.charAt(i) != two.charAt(i));
     		{
-    			counter++;
+    			counter = counter + 1;
     		}
     	}
     	

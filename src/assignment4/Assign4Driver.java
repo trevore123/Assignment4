@@ -22,7 +22,7 @@ public class Assign4Driver
         
         try 
         {
-            List<String> result = wordLadderSolver.computeLadder("money", "smart");
+            List<String> result = wordLadderSolver.computeLadder("heads", "tails");
             //boolean correct = wordLadderSolver.validateResult("money", "honey", result);
             for(String word : result)
             {
