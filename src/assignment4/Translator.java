@@ -4,7 +4,7 @@ public class Translator
 {
 	final static int WORD_LENGTH = 5;
 	
-	public String translate(String data)
+	public String translateDictionary(String data)
 	{
 		char[] parsedData = data.toCharArray();
 		if(parsedData[0] == '*')
@@ -18,6 +18,12 @@ public class Translator
 		}
 			
 		
+	}
+	
+	public String translateInput(String data)
+	{
+		
+		return "";
 	}
 	
 }

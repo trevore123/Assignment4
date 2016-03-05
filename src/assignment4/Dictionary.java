@@ -31,7 +31,7 @@ public class Dictionary
 			
 			for (String s = reader.readLine(); s != null; s = reader.readLine()) 
 			{
-				String word = translator.translate(s);
+				String word = translator.translateDictionary(s);
 				if(word != "")
 				{
 					words.add(word);

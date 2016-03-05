@@ -17,7 +17,7 @@ public class Assign4Driver
 
         try 
         {
-            List<String> result = wordLadderSolver.computeLadder("stone", "money");
+            List<String> result = wordLadderSolver.computeLadder("babes", "child");
             //boolean correct = wordLadderSolver.validateResult("money", "honey", result);
             for(String word : result)
             {
