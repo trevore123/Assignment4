@@ -37,73 +37,105 @@ public class WordLadderSolver implements Assignment4Interface
     {
     	solutionList.add(fromWord);
     	
-    	if(oneLetterDifference(fromWord, toWord) != -1)
+    	if(isOneDifference(fromWord, toWord))
     	{
     		solutionList.add(toWord);
     		return true;
     	}
     	
     	//iterate through dictionary
-    	ArrayList<String> tempList = createSortedTempList(fromWord, index);
+    	ArrayList<String> tempList = createSortedTempList(fromWord, toWord, index);
     	
     	//find all difference of one words and put into templist
     	//make sure not to add words that are already in solutionList
     	
     	for(int i = 0; i < tempList.size(); i++)
     	{
-    		if(makeLadder(tempList.get(i).substring(1), toWord, Integer.valueOf(tempList.get(i).substring(0, 1))) == true)
+    		if(makeLadder(tempList.get(i).substring(1), toWord, getDifferenceIndex(fromWord, tempList.get(i).substring(1))) == true)
     		{
-    			
     			return true;
+    			
     		}
     		else
     			solutionList.remove(tempList.get(i));
     	}
-    	
+    	solutionList.remove(fromWord);
     	return false;
     	
     }
     
-    public ArrayList<String> createSortedTempList(String fromWord, int index)
+    public ArrayList<String> createSortedTempList(String fromWord, String toWord, int index)
     {
     	ArrayList<String> tempList = new ArrayList<String>();
     	for(int i = 0; i < dictionary.words.size(); i++)
     	{
-    		if(oneLetterDifference(fromWord, dictionary.words.get(i)) != -1 && oneLetterDifference(fromWord, dictionary.words.get(i)) != index 
-    				&& !solutionList.contains(dictionary.words.get(i)))
+    		if(isOneDifference(fromWord, dictionary.words.get(i)))
     		{
-    			tempList.add("" + oneLetterDifference(fromWord, dictionary.words.get(i)) + dictionary.words.get(i));
+    			if(getDifferenceIndex(fromWord, dictionary.words.get(i)) != index 
+    				&& !solutionList.contains(dictionary.words.get(i)))
+    			{
+    				tempList.add(countDifferences(fromWord, toWord) + dictionary.words.get(i));
+    			}
     		}
     	}
     	Collections.sort(tempList);
     	return tempList;
     }
     
-    public int oneLetterDifference(String one, String two)
+    public boolean isOneDifference(String one, String two)
     {
-    	char arrayOne[] = one.toCharArray();
-    	char arrayTwo[] = two.toCharArray();
-    	int differenceCounter = 0;
-    	int differenceIndex = -1;
+    	int counter = 0;
     	
     	for(int i = 0; i < one.length(); i++)
     	{
-    		if(arrayOne[i] != arrayTwo[i])
+    		if(one.charAt(i) != two.charAt(i))
     		{
-    			differenceCounter++;
-    			differenceIndex = i;
+    			counter++;
+    		}
+    		
+    		if(counter > 1)
+    		{
+    			return false;
+    		}
+    			
+    	}
+    	
+    	return true;
+    }
+    
+    public int getDifferenceIndex(String one, String two)
+    {
+    	int index = -1;
+    	
+    	for(int i = 0; i < one.length(); i++)
+    	{
+    		if(one.charAt(i) != two.charAt(i))
+    		{
+    			index = i;
+    		}
+    	}
+    	return index;
+    }
+    
+    public int countDifferences(String one, String two)
+    {
+    	int counter = 0;
+    	for(int i = 0; i < one.length(); i++)
+    	{
+    		if(one.charAt(i) != two.charAt(i));
+    		{
+    			counter++;
     		}
     	}
     	
-    	if(differenceCounter == 1)
-    		return differenceIndex;
-    	
-    	return -1;
+    	return counter;
     }
 
     @Override
     public boolean validateResult(String startWord, String endWord, List<String> wordLadder) 
     {
+    	
+    	
         throw new UnsupportedOperationException("Not implemented yet!");
     }
 

@@ -20,10 +20,26 @@ public class Translator
 		
 	}
 	
-	public String translateInput(String data)
+	public boolean checkInput(String data)
 	{
+		String array[] = data.split(" ");
+		if(array.length != 2)
+		{
+			System.out.println("Too many arguements in line");
+			return false;
+		}
+		if(array[0].length() != 5)
+		{
+			System.out.println(array[0] + " is not the correct length");
+			return false;
+		}
+		if(array[1].length() != 5)
+		{
+			System.out.println(array[1] + " is not the correct length");
+			return false;
+		}
 		
-		return "";
+		return true;
 	}
 	
 }
