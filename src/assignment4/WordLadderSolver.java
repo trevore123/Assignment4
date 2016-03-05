@@ -10,16 +10,23 @@ import java.util.List;
 // do not change class name or interface it implements
 public class WordLadderSolver implements Assignment4Interface
 {
-	List<String> solutionList = new ArrayList<String>();
+	// declare class members here.
+	private List<String> solutionList;
+	private Dictionary dictionary;
 	
-    // declare class members here.
-
     // add a constructor for this object. HINT: it would be a good idea to set up the dictionary there
+	WordLadderSolver(String fileName)
+	{
+		solutionList = new ArrayList<String>();
+		dictionary = new Dictionary(fileName);
+	}
 
     // do not change signature of the method implemented from the interface
     @Override
     public List<String> computeLadder(String startWord, String endWord) throws NoSuchLadderException 
     {
+    	if(makeLadder(startWord, endWord, 0))
+    		return solutionList;
     	
         // implement this method
         throw new UnsupportedOperationException("Not implemented yet!");
@@ -27,11 +34,23 @@ public class WordLadderSolver implements Assignment4Interface
     
     public boolean makeLadder(String fromWord, String toWord, int index)
     {
-    	if(fromWord difference of one toWord)
-    		return true;
-    	
     	solutionList.add(fromWord);
+    	
+    	if(oneLetterDifference(fromWord, toWord) != -1)
+    	{
+    		solutionList.add(toWord);
+    		return true;
+    	}
+    	
     	//iterate through dictionary
+    	ArrayList<String> tempList = new ArrayList<String>();
+    	for(int i = 0; i < dictionary.words.size(); i++)
+    	{
+    		if(oneLetterDifference(fromWord, dictionary.words.get(i)) != -1 && !solutionList.contains(dictionary.words.get(i)))
+    		{
+    			tempList.add(dictionary.words.get(i));
+    		}
+    	}
     	//find all difference of one words and put into templist
     	//make sure not to add words that are already in solutionList
     	
@@ -43,11 +62,33 @@ public class WordLadderSolver implements Assignment4Interface
     			return true;
     		}
     		else
-    			solutionList.remove(tempList.get(i))
+    			solutionList.remove(tempList.get(i));
     	}
     	
     	return false;
     	
+    }
+    
+    public int oneLetterDifference(String one, String two)
+    {
+    	char arrayOne[] = one.toCharArray();
+    	char arrayTwo[] = two.toCharArray();
+    	int differenceCounter = 0;
+    	int differenceIndex = -1;
+    	
+    	for(int i = 0; i < one.length(); i++)
+    	{
+    		if(arrayOne[i] != arrayTwo[i])
+    		{
+    			differenceCounter++;
+    			differenceIndex = i;
+    		}
+    	}
+    	
+    	if(differenceCounter == 1)
+    		return differenceIndex;
+    	
+    	return -1;
     }
 
     @Override
