@@ -19,12 +19,14 @@ public class WordLadderSolver implements Assignment4Interface
 	// declare class members here.
 	private List<String> solutionList;
 	private HashSet<String> dict;
+	private HashSet<String> visited;
 	
     // add a constructor for this object. HINT: it would be a good idea to set up the dictionary there
 	public WordLadderSolver(String fileName)
 	{
 		solutionList = new ArrayList<String>();
 		dict = new HashSet<String>();
+		visited = new HashSet<String>();
         try 
         {
             FileReader freader = new FileReader(fileName);
@@ -70,6 +72,7 @@ public class WordLadderSolver implements Assignment4Interface
         }
     	if(makeLadder(startWord, endWord, -1))
     	{
+    	    solutionList.add(endWord);
     		return solutionList;
     	}
     	
@@ -79,23 +82,37 @@ public class WordLadderSolver implements Assignment4Interface
     
     public boolean makeLadder(String fromWord, String toWord, int index)
     {
+        if (visited.contains(fromWord))
+        {
+            return false;
+        }
     	solutionList.add(fromWord);
-    	
-    	if(compareLetters(fromWord, toWord) == 1)
-    	{
-    	    solutionList.add(toWord);
-    		return true;
-    	}
+    	visited.add(fromWord);
+
     	
     	//iterate through dictionary
-    	ArrayList<String> tempList = createSortedTempList(fromWord, toWord, index);
+    	ArrayList<String> tempList = new ArrayList<String>();
+        for(String s: dict)
+        {
+            int differenceToTarget = compareLetters(s, toWord);
+            if(compareLetters(fromWord, s) == 1 && !(solutionList.contains(s)) && getDifferenceIndex(fromWord, s) != index)
+            {
+                if (differenceToTarget == 1)
+                {
+                    solutionList.add(s);
+                    return true;
+                }
+                tempList.add(differenceToTarget + s);
+            }
+        }
+        Collections.sort(tempList);
        
     	
     	//find all difference of one words and put into templist
     	//make sure not to add words that are already in solutionList
     	for(int i = 0; i < tempList.size(); i++)
     	{
-    		if(makeLadder(tempList.get(i).substring(1), toWord, getDifferenceIndex(fromWord, tempList.get(i).substring(1))) == true)
+    		if(makeLadder(tempList.get(i).substring(1), toWord, getDifferenceIndex(fromWord, tempList.get(i).substring(1))))
     		{
     			
     			return true;
@@ -127,15 +144,15 @@ public class WordLadderSolver implements Assignment4Interface
     
     public int getDifferenceIndex(String one, String two)
     {
-    	
+    	int differenceIndex = -1;
     	for(int i = 0; i < one.length(); i++)
     	{
     		if(one.charAt(i) != two.charAt(i))
     		{
-    			return i;
+    			differenceIndex = i;
     		}
     	}
-    	return -1;
+    	return differenceIndex;
     }
     
     private int compareLetters(String word1, String word2)
