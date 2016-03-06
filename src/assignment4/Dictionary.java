@@ -19,7 +19,8 @@ public class Dictionary {
             String s;
             while ((s = reader.readLine()) != null)
             {
-                if (s.charAt(0) != '*'){
+                if (s.charAt(0) != '*')
+                {
                     dict.add(s.substring(0,5));
                 }
             }
@@ -42,7 +43,8 @@ public class Dictionary {
         return dict.contains(s);
     }
     
-    public int size(){
+    public int size()
+    {
         return dict.size();
     }
 

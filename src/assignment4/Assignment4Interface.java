@@ -1,3 +1,11 @@
+/**
+ * Classes to solve word ladders
+ * Solves EE422C programming assignment #4
+ * @author Tauseef Aziz
+ * @author Trevor Eggenberger
+ * @version 1.00 2016-03-06
+ */
+
 package assignment4;
 
 import java.util.List;
