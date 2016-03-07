@@ -29,7 +29,7 @@ public class WordLadderSolver implements Assignment4Interface
 	
     // add a constructor for this object. HINT: it would be a good idea to set up the dictionary there
 	/**
-	 * WordLadderSolver constructor
+	 * Constructs a WordLadderSolver using the proved dictionary file
 	 * @param fileName
 	 */
 	public WordLadderSolver(String fileName)
@@ -39,8 +39,7 @@ public class WordLadderSolver implements Assignment4Interface
 		visited = new HashSet<String>();
         try 
         {
-        	//this portion constructs dictionary from provided file
-        	//assignment4 pdf contained instructions on how to do so
+        	//this portion constructs dictionary from provided dictionary file
             FileReader freader = new FileReader(fileName);
             BufferedReader reader = new BufferedReader(freader);
             String s = reader.readLine();
@@ -69,14 +68,14 @@ public class WordLadderSolver implements Assignment4Interface
 
     // do not change signature of the method implemented from the interface
 	/**
-	 * Computes the word ladder
-	 * @param startWord the start of the ladder
-	 * @param endWord the end of the ladder
-	 * @return String ArrayList containing the word ladder
+	 * Attempts to a word ladder between two words
+	 * @param startWord the start word of the ladder
+	 * @param endWord the end word of the ladder
+	 * @return ArrayList of Strings that contain the word ladder if one is found, throws error otherwise
 	 */
     @Override
     public List<String> computeLadder(String startWord, String endWord) 
-            throws NoSuchLadderException, IllegalArgumentException
+            throws NoSuchLadderException, IllegalArgumentException, SameWordException
     {
     	//conditional makes sure each word is a 5-letter word that can be found in the dictionary
         if (startWord.length() != 5 || endWord.length() != 5 || !(dict.contains(startWord)) || !(dict.contains(endWord))) 
@@ -84,39 +83,43 @@ public class WordLadderSolver implements Assignment4Interface
             throw new IllegalArgumentException("At least one of the words \'" + startWord + "\' or \'" + endWord +
                                                 "\' is not a legitimate 5-letter word from the dictionary");
         }
-        //there is no ladder to print for the same words
+        //if start word and end word are the same, then just print out word twice
         if(startWord.equals(endWord)) 
         {
-            //solutionList.add(startWord);
-            //solutionList.add(startWord);
-            return solutionList;
+            String s = ("For the input words \"" + startWord + "\" and \"" + endWord + "\":\n");
+            throw new SameWordException(s + startWord + " and " + endWord + " are the same word\n\n*********");
         }
+        //valid word ladder can be found -> return the word ladder
     	if(makeLadder(startWord, endWord, -1))
     	{
-    	    solutionList.add(endWord);		//adds endWord to end of solution
     		return solutionList;
     	}
     	
-        // implement this method
+        //no valid word ladder found -> throw exception
     	else throw new NoSuchLadderException("For the input words \"" + startWord + "\" and \"" + endWord + "\":\n" + 
-    			"There is no word ladder between " + startWord + " and " + endWord + "\n**********");
+    			"There is no word ladder between " + startWord + " and " + endWord + "\n\n**********");
     }
 	/**
-	 * Recursive function that constructs the word ladder
-	 * word ladder is placed in solutionList
-	 * @param fromWord
-	 * @param toWord
-	 * @param index 
-	 * @return true if there is a word ladder; false if there is not
+	 * Recursive function that attempts to construct a word ladder between two words
+	 * word ladder is placed in solutionList if one can be made
+	 * @param fromWord the starting word
+	 * @param toWord   the ending word
+	 * @param index    the index of the character that was last changed to produce a new word
+	 * @return true if a word ladder can be found, false otherwise
 	 */
     public boolean makeLadder(String fromWord, String toWord, int index)
     {
+        solutionList.add(fromWord);
+        if (compareLetters(fromWord, toWord) == 1)
+        {
+            solutionList.add(toWord);
+            return true;
+        }
     	//conditional checks for words that have already been tried
         if (visited.contains(fromWord))
         {
             return false;
         }
-    	solutionList.add(fromWord);
     	visited.add(fromWord);
 
     	
@@ -130,22 +133,20 @@ public class WordLadderSolver implements Assignment4Interface
         for(String s: dict)
         {
             int differenceToTarget = compareLetters(s, toWord);
-            //conditional checks for one letter of difference, if the word is already in the solution
-            //checks if the letter changed to obtain word is the same index as the previous change
+            
+            //conditional checks for only one letter difference between words, if the word is already in the solution list,
+            //and checks if the letter changed to obtain word is the same index as the previous change
             if(compareLetters(fromWord, s) == 1 && !(solutionList.contains(s)) && getDifferenceIndex(fromWord, s) != index)
             {
-                if (differenceToTarget == 1)
-                {
-                    solutionList.add(s);
-                    return true;
-                }
                 tempList.add(differenceToTarget + s);
             }
         }
-        Collections.sort(tempList);				//sorts tempList
+        //sorts tempList and puts words closest to target at top of list
+        Collections.sort(tempList);				
        
     	
-    	//iterates through tempList and makes recursive calls to makeLadder
+    	//iterates through tempList and makes recursive calls to makeLadder to see if one of the words 
+        //can form a valid word ladder
     	for(int i = 0; i < tempList.size(); i++)
     	{
     		if(makeLadder(tempList.get(i).substring(1), toWord, getDifferenceIndex(fromWord, tempList.get(i).substring(1))))
@@ -153,20 +154,22 @@ public class WordLadderSolver implements Assignment4Interface
     			
     			return true;
     		}
-    		else solutionList.remove(tempList.get(i));			//removes nonsolution word from solutionList
+    		//word is not a solution, so remove from solutionList
+    		else solutionList.remove(tempList.get(i));			
     	}
-    	solutionList.remove(fromWord);							//removes attempted word from solutionList
+    	//word cannot create a word ladder, so remove word from solutionList and return false
+    	solutionList.remove(fromWord);							
     	return false;
     	
     }
 
     
 	/**
-	 * Finds and returns the index of the differentiating chars
+	 * Finds and returns the index of the character that is different between the two words
 	 * precondition: String one and String two must be the same length
-	 * @param one String to compare
-	 * @param two String to compare
-	 * @return index of the differentiating chars
+	 * @param one first word to compare
+	 * @param two second word to compare
+	 * @return index of the character that is different in two words
 	 */
     public int getDifferenceIndex(String one, String two)
     {
@@ -183,11 +186,11 @@ public class WordLadderSolver implements Assignment4Interface
     
     
 	/**
-	 * Loops through strings and counts differentiating chars
+	 * Counts number of letters that are different between two words
 	 * precondition: String word1 and String word2 must be the same length
-	 * @param word1 String to compare
-	 * @param word2 String to compare
-	 * @return number of different chars
+	 * @param word1 first word to compare
+	 * @param word2 second word to compare
+	 * @return number of different letters
 	 */
     private int compareLetters(String word1, String word2)
     {
@@ -227,7 +230,7 @@ public class WordLadderSolver implements Assignment4Interface
 
     
 	/**
-	 * Clears the solutionList and visited
+	 * Clears the solutionList and visited list
 	 */
     public void clear()
     {
@@ -236,10 +239,28 @@ public class WordLadderSolver implements Assignment4Interface
     }
 }
 
-
+/**
+ * 
+ * Exception used to specify that there is an invalid argument
+ * Invalid arguments can be non-English words, words that aren't five letters, and
+ * lines with incorrect number of words (must be only 2)
+ */
 class IllegalArgumentException extends Exception
 {
     public IllegalArgumentException(String message)
+    {
+        super(message);
+    }
+}
+
+/**
+ * 
+ * Exception used to specify that the starting and ending word are the same
+ *
+ */
+class SameWordException extends Exception
+{
+    public SameWordException(String message)
     {
         super(message);
     }

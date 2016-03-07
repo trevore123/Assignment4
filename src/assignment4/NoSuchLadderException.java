@@ -8,7 +8,11 @@
 
 
 package assignment4;
-//Purpose: takes care of no ladder found case
+/**
+ * 
+ * Exception to specify that a valid word ladder could not be found
+ *
+ */
 public class NoSuchLadderException extends Exception
 {
     private static final long serialVersionUID = 1L;
