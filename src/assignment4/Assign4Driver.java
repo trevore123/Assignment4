@@ -20,6 +20,11 @@ public class Assign4Driver
 {
     public static void main(String[] args)
     {
+    	if (args.length != 2) 
+		{
+			System.err.println ("Error: Incorrect number of command line arguments");
+			System.exit(-1);
+		}
         // Create a word ladder solver object
         try{
         	//args[0] is dictionary file name
